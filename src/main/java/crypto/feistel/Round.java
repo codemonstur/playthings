@@ -1,5 +1,5 @@
 package crypto.feistel;
 
-public interface Round<T> {
-    byte[] doRound(T key, byte[] data);
+public interface Round {
+    byte[] doRound(int number, byte[] data);
 }

@@ -1,60 +1,60 @@
 package crypto.feistel;
 
-import crypto.SymmetricBlockCipher;
+import crypto.BlockCipher;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public enum FeistelCipher {;
 
-    public interface KeyStep<T> {
-        BlockSizeStep<T> key(T key);
+    public interface BlockSizeStep {
+        FirstRoundStep blockSize(int blockSize);
     }
-    public interface BlockSizeStep<T> {
-        RoundStep<T> blockSize(int blockSize);
+    public interface FirstRoundStep {
+        RoundStep addRepeatedRound(int number, Round round);
+        RoundStep addRound(Round round);
     }
-    public interface RoundStep<T> {
-        RoundStep<T> addRound(Round<T> round);
-        SymmetricBlockCipher build();
-    }
-
-    public static <T> BlockSizeStep<T> newFeistelCipher(final T key) {
-        return new Builder<T>().key(key);
+    public interface RoundStep {
+        RoundStep addRepeatedRound(int number, Round round);
+        RoundStep addRound(Round round);
+        BlockCipher build();
     }
 
-    public static class Builder<T> implements BlockSizeStep<T>, KeyStep<T>, RoundStep<T> {
+    public static BlockSizeStep newFeistelCipher() {
+        return new Builder();
+    }
 
-        private final List<Round<T>> rounds = new ArrayList<>();
-        private T key;
+    public static class Builder implements BlockSizeStep, FirstRoundStep, RoundStep {
+
+        private final List<Round> rounds = new ArrayList<>();
         private int halfBlockSize;
 
-        public FeistelCipher.Builder<T> key(final T key) {
-            this.key = key;
-            return this;
-        }
-        public FeistelCipher.Builder<T> blockSize(final int blockSize) {
+        public FeistelCipher.Builder blockSize(final int blockSize) {
             if (blockSize <= 0 || blockSize % 2 != 0)
                 throw new IllegalArgumentException("Block size must be a positive even integer");
-            this.halfBlockSize = blockSize / 2;
+            halfBlockSize = blockSize / 2;
             return this;
         }
-        public FeistelCipher.Builder<T> addRound(final Round<T> round) {
-            this.rounds.add(round);
+        public FeistelCipher.Builder addRound(final Round round) {
+            rounds.add(round);
+            return this;
+        }
+        public FeistelCipher.Builder addRepeatedRound(final int number, final Round round) {
+            for (int i = 0; i < number; i++) rounds.add(round);
             return this;
         }
 
-        public SymmetricBlockCipher build() {
+        public BlockCipher build() {
             final int blockSize = halfBlockSize * 2;
-            return new SymmetricBlockCipher() {
+            return new BlockCipher() {
                 public byte[] encrypt(byte[] data) {
                     if (data.length != halfBlockSize * 2)
                         throw new IllegalArgumentException("Length of data block must be " + (halfBlockSize * 2));
 
                     // run through the rounds
                     byte[] block = data;
-                    for (final var round : rounds) {
-                        block = doRound(round, key, data);
-                    }
+                    for (int i = 0; i < rounds.size(); i++)
+                        block = doRound(rounds.get(i), i, data);
 
                     // swap left and right
                     final byte[] lastBlock = new byte[data.length];
@@ -62,19 +62,22 @@ public enum FeistelCipher {;
                     System.arraycopy(block, 0, lastBlock, halfBlockSize, halfBlockSize);
                     return lastBlock;
                 }
+                public byte[] decrypt(byte[] block) {
+                    return encrypt(block);
+                }
                 public int blockSize() {
                     return blockSize;
                 }
             };
         }
 
-        private byte[] doRound(final Round<T> round, final T key, final byte[] data) {
+        private byte[] doRound(final Round round, final int number, final byte[] data) {
             // get the right side
             final byte[] rightSide = new byte[halfBlockSize];
             System.arraycopy(data, halfBlockSize, rightSide, 0, rightSide.length);
 
             // make the round do its work and XOR
-            final byte[] output = round.doRound(key, rightSide);
+            final byte[] output = round.doRound(number, rightSide);
             for (int i = 0; i < output.length; i++)
                 output[i] = (byte) (data[i] ^ output[i]);
 

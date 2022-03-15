@@ -28,6 +28,19 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>de.sfuhrm</groupId>
+            <artifactId>saphir-hash-core</artifactId>
+            <version>3.0.7</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.115</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
