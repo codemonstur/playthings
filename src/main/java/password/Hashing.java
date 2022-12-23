@@ -26,8 +26,7 @@ public enum Hashing {;
         entry(12L, Keccak256::new), entry(13L, Luffa256::new),
         entry(14L, SHAvite256::new), entry(15L, SIMD256::new),
         entry(16L, Shabal256::new), entry(17L, Skein256::new),
-        entry(18L, ), entry(19L, RadioGatun32::new),
-        entry(20L, RadioGatun64::new)
+        entry(18L, RadioGatun32::new), entry(19L, RadioGatun64::new)
     );
 
     public static final List<Long> ALGORITHM_IDS = List.copyOf(HASHING_ALGORITHMS.keySet());
