@@ -48,6 +48,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.geohex.geohex4j</groupId>
+            <artifactId>geohex4j</artifactId>
+            <version>3.2.2</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 </project>
