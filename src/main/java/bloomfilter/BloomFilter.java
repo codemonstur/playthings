@@ -1,6 +1,5 @@
 package bloomfilter;
 
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -79,7 +78,7 @@ public final class BloomFilter<T> implements Set<T> {
         throw new UnsupportedOperationException("BloomFilters don't store the actual objects");
     }
     @Override
-    public <U> U[] toArray(final U @NotNull [] a) {
+    public <U> U[] toArray(final U [] a) {
         throw new UnsupportedOperationException("BloomFilters don't store the actual objects");
     }
     @Override
@@ -87,11 +86,11 @@ public final class BloomFilter<T> implements Set<T> {
         throw new UnsupportedOperationException("Removing from a BloomFilter is not possible");
     }
     @Override
-    public boolean removeAll(@NotNull final Collection c) {
+    public boolean removeAll(final Collection c) {
         throw new UnsupportedOperationException("Removing from a BloomFilter is not possible");
     }
     @Override
-    public boolean retainAll(@NotNull final Collection c) {
+    public boolean retainAll(final Collection c) {
         throw new UnsupportedOperationException("Removing from a BloomFilter is not possible");
     }
 

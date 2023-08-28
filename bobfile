@@ -1,0 +1,12 @@
+name: playthings
+release: 19
+dependencies:
+  - repository: de.sfuhrm:saphir-hash-core:3.0.10
+  - repository: junit:junit:4.13.2
+    scope: test
+  - repository: io.github.classgraph:classgraph:4.8.162
+    scope: test
+  - repository: com.google.code.gson:gson:2.10.1
+    scope: test
+  - repository: org.geohex.geohex4j:geohex4j:3.2.2
+    scope: test
